@@ -1,8 +1,10 @@
 // The "LayerConsole" class.
-import java.awt.*;
-import java.awt.image.*;
-import java.io.*;
-import java.util.*;
+import java.awt.Graphics2D;
+import java.awt.Graphics;
+import java.awt.Color;
+import java.awt.AlphaComposite;
+import java.lang.*;
+import java.awt.image.BufferedImage;
 import hsa.Console;
 
 public class LayerConsole
@@ -13,7 +15,8 @@ public class LayerConsole
     int width = 500;
     int arraySize = 100;
     LayerConsoleUtil layerArr[];
-
+    BufferedImage buf;   //Buffer
+    Graphics finalImage;
     LayerConsole ()
     {
 	c = new Console ();
@@ -53,16 +56,11 @@ public class LayerConsole
 
     void clear (int layer)
     {
-	g = layerArr [layer].getGraphics ();
-	Color buf = layerArr [layer].getColor ();
-	g.setColor (new Color (0, 0, 0, 0));
-	g.fillRect (0, 0, length, width);
-	g.setColor (buf);
-	g.finalize ();
+	layerArr[layer].setImage(new BufferedImage(length, width, BufferedImage.TYPE_INT_ARGB));
     }
 
 
-    void clearRect (int x, int y, int length, int width, int layer)
+    void clearRect (int x, int y, int length, int width, int layer) //THIS DOES NOT WORK
     {
 	g = layerArr [layer].getGraphics ();
 	Color buf = layerArr [layer].getColor ();
@@ -204,23 +202,33 @@ public class LayerConsole
     {
 	//All images are init as black
 	//Use setColor for color for text
+	//both clear methods do not work
+	//Some weird bug where console stops work a while
+	//Just close RTP entirely and open again
+	buf=new BufferedImage(length, width, BufferedImage.TYPE_INT_ARGB);
+	finalImage=buf.createGraphics();   //If someone wants to get this to work with Graphics2D, be my guest
 	for (int i = 0 ; i < arraySize ; i++)
 	{
-	    c.drawImage (layerArr [i].getImage (), 0, 0, null);
+	    finalImage.drawImage(layerArr[i].getImage(),0,0,null);
 	}
+	finalImage.finalize();
+	c.drawImage (buf, 0, 0, null);
     }
 
 
     public static void main (String[] args)
     {
-	LayerConsole l = new LayerConsole ();      //The 3 states there will be 3 layers starting at 0. 0,1,2; The default is 100.
-	l.setColor (Color.red, 0);      
+	LayerConsole l = new LayerConsole (10);      //The 3 states there will be 3 layers starting at 0. 0,1,2; The default is 100.
+	l.setColor (Color.red, 0);
 	l.fillRect (100, 100, 300, 300, 0);
 	l.setColor (Color.blue, 2);
 	l.fillRect (200, 300, 500, 500, 2);
 	l.setColor (Color.green, 1);
-	l.fillRect (0, 250, 500, 500, 1);
-	l.draw ();
-	
-    } 
+	for (int i = 100 ; i < 640 ; i++)
+	{
+	    l.clear (1);
+	    l.fillRect (i, 250, 100, 100, 1);
+	    l.draw ();
+	}
+    }
 } // LayerConsole class

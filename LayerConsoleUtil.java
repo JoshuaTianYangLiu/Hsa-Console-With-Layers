@@ -1,8 +1,7 @@
 // The "LayerConsole" class.
-import java.awt.*;
-import java.awt.image.*;
-import java.io.*;
-import java.util.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import hsa.Console;
 
 public class LayerConsoleUtil
