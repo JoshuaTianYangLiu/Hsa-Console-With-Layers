@@ -63,18 +63,20 @@ public class LayerConsole {
     }
 
 
-    void clear(int layer) {
-        layerArr[layer].setImage(new BufferedImage(length, width, BufferedImage.TYPE_INT_ARGB));
+    void clear (int layer)
+    {
+        g = layerArr [layer].getGraphics ();
+        g.setComposite (AlphaComposite.getInstance (AlphaComposite.CLEAR, 0.0f));
+        g.fillRect (0,0,length,width);
+        g.finalize();
     }
 
 
-    void clearRect(int x, int y, int length, int width, int layer) //THIS DOES NOT WORK
+    void clearRect (int x, int y, int length, int width, int layer)  //THIS DOES NOT WORK
     {
-        g = layerArr[layer].getGraphics();
-        Color buf = layerArr[layer].getColor();
-        g.setColor(new Color(0, 0, 0, 0));
-        g.fillRect(x, y, length, width);
-        g.setColor(buf);
+        g = layerArr [layer].getGraphics ();
+        g.setComposite (AlphaComposite.getInstance (AlphaComposite.CLEAR, 0.0f));
+        g.fillRect (x,y,length,width);
         g.finalize();
     }
 
@@ -190,19 +192,23 @@ public class LayerConsole {
         }
     }
 
-
-    void draw() {
+    void draw ()
+    {
         //All images are init as black
         //Use setColor for color for text
         //both clear methods do not work
         //Some weird bug where console stops work a while
         //Just close RTP entirely and open again
-        buf = new BufferedImage(length, width, BufferedImage.TYPE_INT_ARGB);
-        finalImage = buf.createGraphics(); //If someone wants to get this to work with Graphics2D, be my guest
-        for (int i = 0; i < arraySize; i++) {
-            finalImage.drawImage(layerArr[i].getImage(), 0, 0, null);
+        g = buf.createGraphics ();
+        g.setComposite (AlphaComposite.getInstance (AlphaComposite.CLEAR, 0.0f));
+        g.fillRect (0,0,length,width);
+        g.finalize();
+        finalImage = buf.createGraphics (); //If someone wants to get this to work with Graphics2D, be my guest
+        for (int i = 0 ; i < arraySize ; i++)
+        {
+            finalImage.drawImage (layerArr [i].getImage (), 0, 0, null);
         }
-        finalImage.finalize();
-        c.drawImage(buf, 0, 0, null);
+        finalImage.finalize ();
+        c.drawImage (buf, 0, 0, null);
     }
 } // LayerConsole class
