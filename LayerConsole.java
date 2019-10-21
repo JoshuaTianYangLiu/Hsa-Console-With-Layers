@@ -9,7 +9,7 @@ import hsa.Console;
 public class LayerConsole {
 
     public static void main(String[] args) {
-        LayerConsole l = new LayerConsole(10); //The 3 states there will be 3 layers starting at 0. 0,1,2; The default is 100.
+        LayerConsole l = new LayerConsole(3); //The 3 states there will be 3 layers starting at 0. 0,1,2; The default is 100.
         l.setColor(Color.red, 0);
         l.fillRect(100, 100, 300, 300, 0);
         l.setColor(Color.blue, 2);
